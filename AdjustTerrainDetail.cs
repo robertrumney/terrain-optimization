@@ -42,10 +42,10 @@ public class AdjustTerrainDetail : MonoBehaviour
 
             // Check if the player is within a certain distance of the edges of the terrain
             float edgeBuffer = 10;  // Adjust this value to control how close the player can get to the edges
-            if (playerTransform.position.x < terrain.transform.position.x + terrain.terrainData.size.x / 2 - edgeBuffer ||
-                playerTransform.position.x > terrain.transform.position.x - terrain.terrainData.size.x / 2 + edgeBuffer ||
-                playerTransform.position.z < terrain.transform.position.z + terrain.terrainData.size.z / 2 - edgeBuffer ||
-                playerTransform.position.z > terrain.transform.position.z - terrain.terrainData.size.z / 2 + edgeBuffer)
+            if (playerTransform.position.x < terrain.transform.position.x + terrain.terrainData.size.x / 2 - edgeBuffer * 2 ||
+                playerTransform.position.x > terrain.transform.position.x - terrain.terrainData.size.x / 2 + edgeBuffer * 2 ||
+                playerTransform.position.z < terrain.transform.position.z + terrain.terrainData.size.z / 2 - edgeBuffer * 2 ||
+                playerTransform.position.z > terrain.transform.position.z - terrain.terrainData.size.z / 2 + edgeBuffer * 2)
             {
                 // Player is within the edge buffer, so don't adjust the terrain detail settings
                 continue;
