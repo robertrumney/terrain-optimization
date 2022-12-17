@@ -11,9 +11,6 @@ public class AdjustTerrainDetail : MonoBehaviour
 
     // List to store the default values for detailObjectDistance and heightmapPixelError for each terrain
     private readonly List<(float, float)> defaultValues = new List<(float, float)>();
-
-    // Flag to determine whether to apply an edge check when adjusting the terrain detail settings
-    private readonly bool applyEdgeCheck = true;
     #endregion
 
     #region Object References
@@ -43,24 +40,8 @@ public class AdjustTerrainDetail : MonoBehaviour
         }
     }
 
-    // This function is called every frame
-    private void Update()
-    {
-        // Check if the edge check should be applied
-        if (applyEdgeCheck)
-        {
-            // If the edge check should be applied, call Update1
-            Update1();
-        }
-        else
-        {
-            // If the edge check should not be applied, call Update2
-            Update2();
-        }
-    }
-
     // This function updates the terrain detail settings, applying an edge check to prevent the player from getting too close to the edges of the terrain
-    private void Update1()
+    private void Update()
     {
         // Loop through all the terrains in the scene
         foreach (Terrain terrain in terrains)
@@ -94,21 +75,6 @@ public class AdjustTerrainDetail : MonoBehaviour
                 terrain.detailObjectDistance = Mathf.Max(distance * 0.5f, minDetailObjectDistance);
                 terrain.heightmapPixelError = Mathf.Max(distance * 0.1f, minHeightmapPixelError);
             }
-        }
-    }
-
-
-    private void Update2()
-    {
-        // Adjust terrain detail settings based on the player's position
-        foreach (Terrain terrain in terrains)
-        {
-            // Calculate the distance from the player to the terrain
-            float distance = Vector3.Distance(playerTransform.position, terrain.transform.position);
-
-            // Update the terrain's detail settings based on the player's position
-            terrain.detailObjectDistance = distance * 0.5f;
-            terrain.heightmapPixelError = distance * 0.1f;
         }
     }
     #endregion
