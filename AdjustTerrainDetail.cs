@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// This script adjusts the detail settings of terrains in the scene based on the player's position
 public class AdjustTerrainDetail : MonoBehaviour
 {
     #region Configuration
@@ -24,6 +23,13 @@ public class AdjustTerrainDetail : MonoBehaviour
     #endregion
 
     #region MonoBehaviours
+
+    private void Awake()
+    {
+        this.enabled = false;
+
+    }
+
     // This function is called when the script is first enabled
     private void Start()
     {
@@ -40,42 +46,69 @@ public class AdjustTerrainDetail : MonoBehaviour
         }
     }
 
-    // This function updates the terrain detail settings, applying an edge check to prevent the player from getting too close to the edges of the terrain
+    // This function calculates and displays the distance between the player and the nearest edge of the terrain they are on
     private void Update()
+    {
+        // Find the terrain that the player is on
+        Terrain terrain = FindTerrain(playerTransform.position);
+
+        // Calculate the distance from the player to the nearest edge of the terrain
+        float distanceToEdge = CalculateDistanceToEdge(playerTransform.position, terrain);
+
+        // Display the distance to the nearest edge of the terrain
+        //Debug.Log($"Distance to edge: {distanceToEdge}");
+
+        // Update the terrain detail settings based on the player's position
+        terrain.detailObjectDistance = Mathf.Max(distanceToEdge * 0.5f, minDetailObjectDistance);
+        terrain.heightmapPixelError = Mathf.Max(distanceToEdge * 0.1f, minHeightmapPixelError);
+
+        print(terrain.name + "-" + terrain.heightmapPixelError);
+    }
+    #endregion
+
+    #region Custom Functions
+    // This function finds the terrain that the specified position is on
+    private Terrain FindTerrain(Vector3 position)
     {
         // Loop through all the terrains in the scene
         foreach (Terrain terrain in terrains)
         {
-            // Calculate the distance from the player to the terrain
-            float distance = Vector3.Distance(playerTransform.position, terrain.transform.position);
+            Vector3 center = terrain.transform.position + new Vector3(terrain.terrainData.size.x / 2, 0, terrain.terrainData.size.z / 2);
 
-            // Calculate the edge buffer distance, which determines how close the player can get to the edges of the terrain
-            float edgeBuffer = 10;
-
-            // Check if the player's position is within the allowed range
-            if
-                (
-                    playerTransform.position.x < terrain.transform.position.x + terrain.terrainData.size.x / 2 - edgeBuffer &&
-                    playerTransform.position.x > terrain.transform.position.x - terrain.terrainData.size.x / 2 + edgeBuffer &&
-                    playerTransform.position.z < terrain.transform.position.z + terrain.terrainData.size.z / 2 - edgeBuffer &&
-                    playerTransform.position.z > terrain.transform.position.z - terrain.terrainData.size.z / 2 + edgeBuffer
-                )
+            // Check if the position is within the bounds of the terrain
+            if (position.x < center.x + terrain.terrainData.size.x / 2 &&
+                position.x > center.x - terrain.terrainData.size.x / 2 &&
+                position.y < center.y + terrain.terrainData.size.y / 2 &&
+                position.y > center.y - terrain.terrainData.size.y / 2 &&
+                position.z < center.z + terrain.terrainData.size.z / 2 &&
+                position.z > center.z - terrain.terrainData.size.z / 2)
             {
-                // Player is within the edge buffer, so don't adjust the terrain detail settings
-                // Get the default values for the current terrain
-                (float defaultDetailObjectDistance, float defaultHeightmapPixelError) = defaultValues[terrains.IndexOf(terrain)];
-
-                // Set the terrain's detailObjectDistance and heightmapPixelError properties to their default values
-                terrain.detailObjectDistance = defaultDetailObjectDistance;
-                terrain.heightmapPixelError = defaultHeightmapPixelError;
-            }
-            else
-            {
-                // Update the terrain's detail settings based on the player's position
-                terrain.detailObjectDistance = Mathf.Max(distance * 0.5f, minDetailObjectDistance);
-                terrain.heightmapPixelError = Mathf.Max(distance * 0.1f, minHeightmapPixelError);
+                // Position is within the bounds of the terrain, so return a reference to the terrain
+                return terrain;
             }
         }
+
+        // No terrain was found at the specified position, so return null
+        return null;
+    }
+
+    // This function calculates the distance between the specified position and the nearest edge of the specified terrain
+    private float CalculateDistanceToEdge(Vector3 position, Terrain terrain)
+    {
+        // Calculate the distance to the nearest edge along the x axis
+        float distanceToEdgeX = Mathf.Min(
+            position.x - (terrain.transform.position.x - terrain.terrainData.size.x / 2),
+            (terrain.transform.position.x + terrain.terrainData.size.x / 2) - position.x
+        );
+
+        // Calculate the distance to the nearest edge along the z axis
+        float distanceToEdgeZ = Mathf.Min(
+            position.z - (terrain.transform.position.z - terrain.terrainData.size.z / 2),
+            (terrain.transform.position.z + terrain.terrainData.size.z / 2) - position.z
+        );
+
+        // Return the minimum distance to the nearest edge along either axis
+        return Mathf.Min(distanceToEdgeX, distanceToEdgeZ);
     }
     #endregion
 }
