@@ -23,13 +23,6 @@ public class AdjustTerrainDetail : MonoBehaviour
     #endregion
 
     #region MonoBehaviours
-
-    private void Awake()
-    {
-        this.enabled = false;
-
-    }
-
     // This function is called when the script is first enabled
     private void Start()
     {
@@ -55,14 +48,9 @@ public class AdjustTerrainDetail : MonoBehaviour
         // Calculate the distance from the player to the nearest edge of the terrain
         float distanceToEdge = CalculateDistanceToEdge(playerTransform.position, terrain);
 
-        // Display the distance to the nearest edge of the terrain
-        //Debug.Log($"Distance to edge: {distanceToEdge}");
-
         // Update the terrain detail settings based on the player's position
         terrain.detailObjectDistance = Mathf.Max(distanceToEdge * 0.5f, minDetailObjectDistance);
         terrain.heightmapPixelError = Mathf.Max(distanceToEdge * 0.1f, minHeightmapPixelError);
-
-        print(terrain.name + "-" + terrain.heightmapPixelError);
     }
     #endregion
 
