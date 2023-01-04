@@ -37,6 +37,9 @@ public class AdjustTerrainDetail : MonoBehaviour
         {
             defaultValues.Add((terrain.detailObjectDistance, terrain.heightmapPixelError));
         }
+
+        if (GameProgress.instance.indoors)
+            this.enabled = false;
     }
 
     // This function calculates and displays the distance between the player and the nearest edge of the terrain they are on
@@ -52,6 +55,19 @@ public class AdjustTerrainDetail : MonoBehaviour
         terrain.detailObjectDistance = Mathf.Max(distanceToEdge * 0.5f, minDetailObjectDistance);
         terrain.heightmapPixelError = Mathf.Max(distanceToEdge * 0.1f, minHeightmapPixelError);
     }
+
+    // This function is called when the script is destroyed
+    private void OnDestroy()
+    {
+        // Loop through all the terrains in the scene
+        for (int i = 0; i < terrains.Count; i++)
+        {
+            // Reset the detailObjectDistance and heightmapPixelError values for the terrain to their default values
+            terrains[i].detailObjectDistance = defaultValues[i].Item1;
+            terrains[i].heightmapPixelError = defaultValues[i].Item2;
+        }
+    }
+
     #endregion
 
     #region Custom Functions
