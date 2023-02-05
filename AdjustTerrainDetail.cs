@@ -37,9 +37,6 @@ public class AdjustTerrainDetail : MonoBehaviour
         {
             defaultValues.Add((terrain.detailObjectDistance, terrain.heightmapPixelError));
         }
-
-        if (GameProgress.instance.indoors)
-            this.enabled = false;
     }
 
     // This function calculates and displays the distance between the player and the nearest edge of the terrain they are on
