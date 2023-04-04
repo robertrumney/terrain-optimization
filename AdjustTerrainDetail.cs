@@ -8,7 +8,7 @@ public class AdjustTerrainDetail : MonoBehaviour
     public float minDetailObjectDistance = 30;
     public float minHeightmapPixelError = 3;
 
-    // List to store the default values for detailObjectDistance and heightmapPixelError for each terrain
+    // List of tuples to store the default values for detailObjectDistance and heightmapPixelError for each terrain
     private readonly List<(float, float)> defaultValues = new List<(float, float)>();
     #endregion
 
@@ -64,7 +64,6 @@ public class AdjustTerrainDetail : MonoBehaviour
             terrains[i].heightmapPixelError = defaultValues[i].Item2;
         }
     }
-
     #endregion
 
     #region Custom Functions
