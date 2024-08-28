@@ -23,7 +23,6 @@ public class AdjustTerrainDetail : MonoBehaviour
     #endregion
 
     #region MonoBehaviours
-    // This function is called when the script is first enabled
     private void Start()
     {
         // Find all terrains in the scene
@@ -39,7 +38,7 @@ public class AdjustTerrainDetail : MonoBehaviour
         }
     }
 
-    // This function calculates and displays the distance between the player and the nearest edge of the terrain they are on
+    // Calculate the distance between the player and the nearest edge of the terrain they are on
     private void Update()
     {
         // Find the terrain that the player is on
@@ -53,7 +52,6 @@ public class AdjustTerrainDetail : MonoBehaviour
         terrain.heightmapPixelError = Mathf.Max(distanceToEdge * 0.1f, minHeightmapPixelError);
     }
 
-    // This function is called when the script is destroyed
     private void OnDestroy()
     {
         // Loop through all the terrains in the scene
